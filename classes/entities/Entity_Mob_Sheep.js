@@ -1,0 +1,32 @@
+entities.Entity_Mob_Sheep = function (b, a, c) {
+    entities.Entity_Mob.call(this, b, a, c);
+}
+m["entities.Entity_Mob_Sheep"] = entities.Entity_Mob_Sheep
+entities.Entity_Mob_Sheep.__name__ = "entities.Entity_Mob_Sheep"
+entities.Entity_Mob_Sheep.__super__ = entities.Entity_Mob
+entities.Entity_Mob_Sheep.prototype = z(entities.Entity_Mob.prototype, {
+    render: function (b) {
+        entities.Entity_Mob.prototype.render.call(this, 4);
+        var a = this.world.mobs.h[this.id];
+        this.entityMatrix.reset().translate(-.36666666666666664, -.5666666666666667).rotate2D(-this.rotation / 180 * Math.PI).scale(2.4 * this.scaleX, 2.4 * this.scaleY).translate(Math.floor(this.movieX * this.game.zoom) / this.game.zoom, Math.floor(this.movieY * this.game.zoom) / this.game.zoom);
+        b = this.entity;
+        var c = this.quadPositions[0],
+            d = new lemongine.Point(22 * entities.Entity_Mob_Sheep.frames[this.currentFrame], 78),
+            f = new lemongine.Point(22, 17),
+            l = lemongine.Geom.quadMatrixHelper(new lemongine.Rectangle(0, 0, .7333333333333333, .5666666666666667), this.entityMatrix),
+            p = new haxe.ds.StringMap();
+        p.h.texBlend = entities.Entity_Mob.blendMob;
+        var m = lemongine.Mathz.repeatArray([this.colorTransform[4] / 255 * this.alpha, this.colorTransform[5] / 255 * this.alpha, this.colorTransform[6] / 255 * this.alpha, this.colorTransform[7] / 255 * this.alpha], 6);
+        p.h.colorOffset = m;
+        m = lemongine.Mathz.repeatArray([this.colorTransform[0], this.colorTransform[1], this.colorTransform[2], this.colorTransform[3] * this.alpha], 6);
+        p.h.color = m;
+        b.updateQuad(c, null, d, f, null, l, null, p);
+        1 != a.h.sheared ? (b = 1 == this.currentFrame ? 1 : 0, this.entityMatrix.reset().translate(-.36666666666666664, -((17 - b) / 30)).rotate2D(-this.rotation / 180 * Math.PI).scale(2.4 * this.scaleX, 2.4 * this.scaleY).translate(Math.floor(this.movieX * this.game.zoom) / this.game.zoom, Math.floor(this.movieY * this.game.zoom) / this.game.zoom), Object.prototype.hasOwnProperty.call(Colors.colors.h, a.h.color) || (a.h.color = "white"), b = this.entity, c = this.quadPositions[1], d = new lemongine.Point(22 * entities.Entity_Mob_Sheep.framesWool[this.currentFrame], 95), f = new lemongine.Point(22, 17), l = lemongine.Geom.quadMatrixHelper(new lemongine.Rectangle(0, 0, .7333333333333333, .5666666666666667), this.entityMatrix), p = new haxe.ds.StringMap(), p.h.texBlend = entities.Entity_Mob.blendMob, m = lemongine.Mathz.repeatArray([this.colorTransform[4] / 255 * this.alpha, this.colorTransform[5] / 255 * this.alpha, this.colorTransform[6] / 255 * this.alpha, this.colorTransform[7] / 255 * this.alpha], 6), p.h.colorOffset = m, m = lemongine.Mathz.repeatArray([this.colorTransform[0] * Colors.colors.h[a.h.color].h.r, this.colorTransform[1] * Colors.colors.h[a.h.color].h.g, this.colorTransform[2] * Colors.colors.h[a.h.color].h.b, this.colorTransform[3] * this.alpha], 6), p.h.color = m, b.updateQuad(c, null, d, f, null, l, null, p)) : this.entity.updateQuad(this.quadPositions[1], null, new lemongine.Point(), new lemongine.Point());
+        null != this.get_armor()[0] && "MustacheCap" == Game.makeDynamicArray(this.get_armor()[0])[0] && 1 <= Game.makeDynamicArray(this.get_armor()[0])[1] ? (b = 27 - entities.Entity_Mob_Sheep.mustacheOffset[this.currentFrame], this.entityMatrix.reset().translate(-.26666666666666666, -.26666666666666666).scale(1.53, 1.53).translate(-.7200000000000001, -(b / 30)).rotate2D(-this.rotation / 180 * Math.PI).scale(this.scaleX, this.scaleY).translate(Math.floor(this.movieX * this.game.zoom) / this.game.zoom, Math.floor(this.movieY * this.game.zoom) / this.game.zoom), a = Textures.getTexture("mustache"), b = this.entity, c = this.quadPositions[2], d = new lemongine.Point(a.x, a.y), f = new lemongine.Point(a.width, a.height), l = lemongine.Geom.quadMatrixHelper(new lemongine.Rectangle(0, 0, .5333333333333333, .5333333333333333), this.entityMatrix), p = new haxe.ds.StringMap(), p.h.texBlend = entities.Entity_Mob.blendItems, m = lemongine.Mathz.repeatArray([this.colorTransform[4] / 255 * this.alpha, this.colorTransform[5] / 255 * this.alpha, this.colorTransform[6] / 255 * this.alpha, this.colorTransform[7] / 255 * this.alpha], 6), p.h.colorOffset = m, m = lemongine.Mathz.repeatArray([this.colorTransform[0], this.colorTransform[1], this.colorTransform[2], this.colorTransform[3] * this.alpha], 6), p.h.color = m, b.updateQuad(c, null, d, f, null, l, null, p)) : this.entity.updateQuad(this.quadPositions[2], null, new lemongine.Point(), new lemongine.Point());
+        1 == this.fire ? (0 == Main.Instance.game.world.tick % 2 && (this.randomFireTexture = Std.string(1 + Math.floor(4 * Math.random()))), b = 44.3 - entities.Entity_Mob_Sheep.mustacheOffset[this.currentFrame], this.entityMatrix.reset().translate(-.26666666666666666, -.26666666666666666).scale(1.0500173599999998, 1.0500173599999998).translate(-.5866666666666667, -(b / 30)).rotate2D(-this.rotation / 180 * Math.PI).scale(this.scaleX, this.scaleY).translate(Math.floor(this.movieX * this.game.zoom) / this.game.zoom, Math.floor(this.movieY * this.game.zoom) / this.game.zoom), b = this.entity, c = this.quadPositions[3], d = new lemongine.Point(Textures.getTexture("fire", this.randomFireTexture).x, Textures.getTexture("fire", this.randomFireTexture).y), f = new lemongine.Point(Textures.getTexture("fire", this.randomFireTexture).width, Textures.getTexture("fire", this.randomFireTexture).height), l = lemongine.Geom.quadMatrixHelper(new lemongine.Rectangle(0, 0, .5333333333333333, .5333333333333333), this.entityMatrix), p = new haxe.ds.StringMap(), p.h.texBlend = entities.Entity_Mob.blendItems, m = lemongine.Mathz.repeatArray([1, 1, 1, this.colorTransform[3] * this.alpha], 6), p.h.color = m, b.updateQuad(c, null, d, f, null, l, null, p)) : this.entity.updateQuad(this.quadPositions[3], null, new lemongine.Point(), new lemongine.Point());
+    },
+    __class__: entities.Entity_Mob_Sheep
+})
+entities.Entity_Mob_Sheep.frames = [0, 0, 1, 2, 3, 4]
+entities.Entity_Mob_Sheep.framesWool = [0, 0, 0, 0, 1, 2]
+entities.Entity_Mob_Sheep.mustacheOffset = [0, 0, -1, 0, 7, 6]
