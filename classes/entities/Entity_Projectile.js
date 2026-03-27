@@ -81,6 +81,7 @@ entities.Entity_Projectile.prototype = z(entities.Entity_Base.prototype, {
                         p = this.get_y() - B;
                         d.h.relativeY = p;
                         this.set_stuckIn(d);
+                        if (new EntityEvent("projectileEntityCollision", this).canceled) return;
                         break;
                     } else {
                         this.remove();
@@ -113,9 +114,12 @@ entities.Entity_Projectile.prototype = z(entities.Entity_Base.prototype, {
                 p = this.get_y();
                 d.h.relativeY = p - B.h.y;
                 this.set_stuckIn(d);
+                if (new EntityEvent("projectileEntityCollision", this).canceled) return;
                 break;
             }
-            3 != this.world.gamemode && this.world.player.get_hit().contains(this.get_x(), this.get_y()) && (0 >= this.get_cooldown() || this.get_shotBy() != this.world.player.id) && (this.game.ouch(1, b, "arrow"), 0 < this.get_speedX() ? this.world.xSpeed -= 4 + (null == this.get_punch() ? 0 : 5 * this.get_punch()) : 0 > this.get_speedX() && (this.world.xSpeed += 4 + (null == this.get_punch() ? 0 : 5 * this.get_punch())), w = null == this.get_punch() ? 0 : 5 * this.get_punch(), this.world.ySpeed = 3 + w, this.set_hurtCooldown(5), "spear" != this.entityType || .3333333333333333 > Math.random()) && (x = new haxe.ds.StringMap(), x.h.type = "player", x.h.id = this.world.player.id, x.h.direction = this.game.characterXScale, p = this.get_rotation(), x.h.rotation = p, p = this.get_x() - this.world.worldX, x.h.relativeX = p, p = this.get_y() - this.world.worldY, x.h.relativeY = p, this.set_stuckIn(x));
+            let playerCollision = false;
+            3 != this.world.gamemode && this.world.player.get_hit().contains(this.get_x(), this.get_y()) && (0 >= this.get_cooldown() || this.get_shotBy() != this.world.player.id) && (this.game.ouch(1, b, "arrow"), 0 < this.get_speedX() ? this.world.xSpeed -= 4 + (null == this.get_punch() ? 0 : 5 * this.get_punch()) : 0 > this.get_speedX() && (this.world.xSpeed += 4 + (null == this.get_punch() ? 0 : 5 * this.get_punch())), w = null == this.get_punch() ? 0 : 5 * this.get_punch(), this.world.ySpeed = 3 + w, this.set_hurtCooldown(5), "spear" != this.entityType || .3333333333333333 > Math.random()) && (x = new haxe.ds.StringMap(), x.h.type = "player", x.h.id = this.world.player.id, x.h.direction = this.game.characterXScale, p = this.get_rotation(), x.h.rotation = p, p = this.get_x() - this.world.worldX, x.h.relativeX = p, p = this.get_y() - this.world.worldY, x.h.relativeY = p, this.set_stuckIn(x), playerCollision = true);
+            if (playerCollision && new EntityEvent("projectileEntityCollision", this).canceled) return;
         } else this.set_hurtCooldown(this.get_hurtCooldown() - 1);
         if (null != this.get_stuckIn()) {
             if (this.set_timer(this.get_timer() + 2), this.set_speedX(this.set_speedY(0)), "player" == this.get_stuckIn().h.type) {
@@ -190,7 +194,9 @@ entities.Entity_Projectile.prototype = z(entities.Entity_Base.prototype, {
                 }
                 b = !0;
                 this.get_wasntHitting() && (p = this.game.raycastSolidBlock(a, c, Math.atan2(this.get_speedY(), this.get_speedX()), 2), null != p && "slimeb" == this.world.getFG(p.h.x, p.h.y) && (p.h.previousX != p.h.x ? (Math.abs(this.get_speedX()) > Game.migrateSpeed(3) && (b = !1), this.set_speedX(.8 * -this.get_speedX())) : (Math.abs(this.get_speedY()) > Game.migrateSpeed(3) && (b = !1), this.set_speedY(.8 * -this.get_speedY())), b || (this.set_x(a), this.set_y(c))));
-                b && (this.set_speedX(0), this.set_speedY(0), 1 == this.get_wasntHitting() && (this.set_wasntHitting(!1), this.game.requestSound("Trrrr", this.get_x() - this.world.worldX, this.get_y() - this.world.worldY)));
+                let blockCollision = false;
+                b && (this.set_speedX(0), this.set_speedY(0), 1 == this.get_wasntHitting() && (this.set_wasntHitting(!1), this.game.requestSound("Trrrr", this.get_x() - this.world.worldX, this.get_y() - this.world.worldY), blockCollision = true));
+                if (blockCollision && new EntityEvent("projectileBlockCollision", this).canceled) return; 
             } else {
                 if ("la" == this.world.getFG(Math.floor(this.get_x()), Math.floor(-this.get_y()))) {
                     if ("snowball" == this.entityType) {

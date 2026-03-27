@@ -222,6 +222,7 @@ var Game = function (b, a, c, d, f, l, p, Q, h) {
     this.resize();
     c && (this.firstTime = !0, this.initializeWorldGen(d, f, l, p, Q));
     null != window.gameplayStart && window.gameplayStart();
+    icegear.game = this;
 };
 m.Game = Game
 Game.__name__ = "Game"
