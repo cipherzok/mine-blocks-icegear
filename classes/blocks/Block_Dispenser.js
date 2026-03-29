@@ -35,6 +35,7 @@ blocks.Block_Dispenser.prototype = z(blocks.Block.prototype, {
                 if (null == a || null == a[0]) a = this.world.states.h[this.blockID + "_2"][b] = Game.emptyItem();
                 var c = a[0],
                     d = !1;
+                if (new DispenserEvent("dispenseItem", this, a, b).canceled) return;
                 if ("arrow" == c) {
                     var f = this.world.arrows,
                         l = Game.uniqueID(this.world.arrows, "arrow"),
