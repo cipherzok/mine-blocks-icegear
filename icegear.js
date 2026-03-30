@@ -1,4 +1,6 @@
-window.icegear = {}
+window.icegear = {
+    maxHealth: 20
+}
 
 const listeners = {
     projectileBlockCollision: [],

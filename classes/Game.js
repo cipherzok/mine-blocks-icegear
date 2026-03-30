@@ -1776,7 +1776,7 @@ Game.prototype = {
         this.onCertainInterval();
         this.manageEffects(this.world.player.id);
         0 > this.world.food && (this.world.food = 0);
-        if (20 < this.world.health || 1 == this.world.gamemode) this.world.health = 20;
+        if (icegear.maxHealth < this.world.health || 1 == this.world.gamemode) this.world.health = icegear.maxHealth;
         0 > this.world.experience && (this.world.experience = 0);
         if (1E3 < this.world.food || 1 == this.world.gamemode) this.world.food = 1E3;
         this.world.health = Math.floor(this.world.health);
@@ -1804,7 +1804,7 @@ Game.prototype = {
             this.world.riding = "";
             this.world.xSpeed = 0;
             this.world.ySpeed = 0;
-            this.world.health = 20;
+            this.world.health = icegear.maxHealth;
             this.world.food = 1E3;
             this.world.effects = new haxe.ds.StringMap();
             this.resetEffectIcons();
@@ -3086,7 +3086,7 @@ Game.prototype = {
         return -1;
     },
     canEatFood: function (b) {
-        return null == BlockData.get(b, "food") || 0 < this.world.sleepingAnimation ? !1 : 900 >= this.world.food || null != Game.makeDynamicMap(BlockData.get(b, "food")).h.health && 20 > this.world.health ? !0 : null != Game.makeDynamicMap(BlockData.get(b, "food")).h.effects;
+        return null == BlockData.get(b, "food") || 0 < this.world.sleepingAnimation ? !1 : 900 >= this.world.food || null != Game.makeDynamicMap(BlockData.get(b, "food")).h.health && icegear.maxHealth > this.world.health ? !0 : null != Game.makeDynamicMap(BlockData.get(b, "food")).h.effects;
     },
     useUpItem: function (b) {
         null == b && (b = -1);
@@ -3600,7 +3600,7 @@ Game.prototype = {
                 Console.newLine("[INFO] give itemname [quantity] [damage] [data_tags]");
                 break;
             case "heal":
-                this.world.health = 20;
+                this.world.health = icegear.maxHealth;
                 f && Console.newLine("[INFO] Health restored.");
                 break;
             case "help":
@@ -13304,14 +13304,22 @@ Game.prototype = {
         }
     },
     renderHealthBar: function () {
-        for (var b = 0; 10 > b;) {
-            var a = b++,
-                c = this.hudEntity,
-                d = this.hotbarBounds.get_left() + 108 * a / 9 + 4,
-                f = this.scene.get_height() - 64,
-                g = this.world.health / 2 > a ? (this.world.health - 1) / 2 > a ? 98 : 89 : 80,
-                p = this.world.hardcore ? 9 : 0;
-            c.addQuad(new lemongine.Vector3(d, f + (6 < this.world.health ? 0 : 2.8 * Math.sin(3.7 * a + 2.3 * Math.floor(this.world.tick / 4)) / (this.world.health + 1)), 0), new lemongine.Point(g, 57 + p), new lemongine.Point(9, 9), !0, new lemongine.Point(11.34, 11.34));
+        const hearts = Math.ceil(icegear.maxHealth / 2);
+        let column = 0;
+        let row = 0;
+        for (var b = 0; hearts > b;) {
+            if (column === 10) {
+                row++
+                column = 0;
+            }
+            var a = b++
+                , c = this.hudEntity
+                , d = this.hotbarBounds.get_left() + 108 * column / 9 + 4
+                , f = this.scene.get_height() - 64 - row * 13
+                , g = this.world.health / 2 > a ? (this.world.health - 1) / 2 > a ? 98 : 89 : 80
+                , p = this.world.hardcore ? 9 : 0;
+            c.addQuad(new lemongine.Vector3(d, f + (6 < this.world.health ? 0 : 2.8 * Math.sin(3.7 * column + 2.3 * Math.floor(this.world.tick / 4)) / (this.world.health + 1)), 0), new lemongine.Point(g, 57 + p), new lemongine.Point(9, 9), !0, new lemongine.Point(11.34, 11.34));
+            column++
         }
     },
     renderHungerBar: function () {
@@ -13945,7 +13953,7 @@ Game.prototype = {
                 null == Q.h.potency && (Q.h.potency = 1);
                 var B = Q.h.potency;
                 if ("instanthealth" == p || "instantdamage" == p) {
-                    if (a) B = Math.floor(Math.min(20, this.world.health + B * Math.pow(2, Math.min(15, Math.max(0, Q.h.level - 1))) * Game.makeDynamicMap(this.effectData.h[p]).h.perLevel * 2)), B < Math.min(20, this.world.health) ? this.ouch(1, this.world.health - B, "potion") : this.world.health = B;else {
+                    if (a) B = Math.floor(Math.min(icegear.maxHealth, this.world.health + B * Math.pow(2, Math.min(15, Math.max(0, Q.h.level - 1))) * Game.makeDynamicMap(this.effectData.h[p]).h.perLevel * 2)), B < Math.min(icegear.maxHealth, this.world.health) ? this.ouch(1, this.world.health - B, "potion") : this.world.health = B;else {
                         var m = "zombie" == this.world.mobs.h[b].h.type || "skeleton" == this.world.mobs.h[b].h.type || "zombiepigman" == this.world.mobs.h[b].h.type ? Math.floor(this.world.mobs.h[b].h.health - B * Math.pow(2, Math.min(15, Math.max(0, Q.h.level - 1))) * Game.makeDynamicMap(this.effectData.h[p]).h.perLevel * 2) : Math.floor(this.world.mobs.h[b].h.health + B * Math.pow(2, Math.min(15, Math.max(0, Q.h.level - 1))) * Game.makeDynamicMap(this.effectData.h[p]).h.perLevel * 2);
                         m < this.world.mobs.h[b].h.health ? this.getMob(b).hurtMob(b, this.world.mobs.h[b].h.health - m, "potion") : (B = this.world.mobs.h[b], m = Math.min(this.getMob(b).mobMaxHealth(b), m), B.h.health = m);
                     }
@@ -13972,7 +13980,7 @@ Game.prototype = {
                     0 == this.world.tick % Math.max(1, Math.floor(2 * Main.Instance.get_fps() / Math.pow(2, Q.h.level))) && (a ? 1 < this.world.health && this.ouch(1, 1, "poison") : 1 < this.world.mobs.h[b].h.health && this.getMob(b).hurtMob(b, 1, "poison"));
                     break;
                 case "regeneration":
-                    0 == this.world.tick % Math.max(1, Math.floor(2.5 * Main.Instance.get_fps() / Math.pow(2, Q.h.level))) && (a ? (20 > this.world.health && (this.world.health += 1), 1E3 > this.world.food && (this.world.food += 50)) : "zombie" == this.world.mobs.h[b].h.type || "skeleton" == this.world.mobs.h[b].h.type || "zombiepigman" == this.world.mobs.h[b].h.type ? (B = this.world.mobs.h[b], --B.h.health) : this.world.mobs.h[b].h.health < this.world.mobData.h[this.world.mobs.h[b].h.type].h.health && (B = this.world.mobs.h[b], B.h.health += 1));
+                    0 == this.world.tick % Math.max(1, Math.floor(2.5 * Main.Instance.get_fps() / Math.pow(2, Q.h.level))) && (a ? (icegear.maxHealth > this.world.health && (this.world.health += 1), 1E3 > this.world.food && (this.world.food += 50)) : "zombie" == this.world.mobs.h[b].h.type || "skeleton" == this.world.mobs.h[b].h.type || "zombiepigman" == this.world.mobs.h[b].h.type ? (B = this.world.mobs.h[b], --B.h.health) : this.world.mobs.h[b].h.health < this.world.mobData.h[this.world.mobs.h[b].h.type].h.health && (B = this.world.mobs.h[b], B.h.health += 1));
                 }
                 1 == Q.h.showParticles && .2 > Math.random() && (a ? (Q = new lemongine.Point(this.world.worldX, 0), B = new lemongine.Point(this.world.worldY - 1, 0), m = new haxe.ds.StringMap(), m.h.r = this.effectData.h[p].h.r, m.h.g = this.effectData.h[p].h.g, m.h.b = this.effectData.h[p].h.b, this.addParticles("effect", 1, 0, Q, B, !1, m)) : (Q = new lemongine.Point(this.world.mobs.h[b].h.x, 0), B = new lemongine.Point(this.world.mobs.h[b].h.y, 0), m = new haxe.ds.StringMap(), m.h.r = this.effectData.h[p].h.r, m.h.g = this.effectData.h[p].h.g, m.h.b = this.effectData.h[p].h.b, this.addParticles("effect", 1, 0, Q, B, !1, m)));
             }
